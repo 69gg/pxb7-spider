@@ -1,0 +1,16 @@
+[project]
+name = "pxb7-spider"
+version = "0.1.0"
+description = "Recursive crawler for pxb7.com product listings"
+requires-python = ">=3.10"
+dependencies = ["playwright>=1.45"]
+
+[project.scripts]
+pxb7-spider = "pxb7.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["pxb7"]
