@@ -24,42 +24,43 @@
 
 ```bash
 cd /data1/pxb7-spider
-uv venv --python 3.12 .venv
-UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple uv pip install -e .
+uv sync
 ```
+
+`uv sync` 会按 `uv.lock` 创建 `.venv` 并安装本项目，后续命令统一用 `uv run`，无需手动激活虚拟环境。
 
 默认使用系统安装的 Chrome（`--browser-channel chrome`）。没有 Chrome 时：
 
 ```bash
-.venv/bin/python -m playwright install chromium   # 可用 PLAYWRIGHT_DOWNLOAD_HOST 换镜像
-python -m pxb7 crawl --game 10161 --browser-channel ""
+uv run playwright install chromium
+uv run pxb7-spider crawl --game 10161 --browser-channel ""
 ```
 
 ## 用法
 
 ```bash
 # 查看分类（游戏），支持关键字过滤 / JSON 输出
-python -m pxb7 games --keyword 星穹
-python -m pxb7 games --json > data/games.json
+uv run pxb7-spider games --keyword 星穹
+uv run pxb7-spider games --json > data/games.json
 
 # 抓单个游戏
-python -m pxb7 crawl --game 10161
+uv run pxb7-spider crawl --game 10161
 
 # 抓多个游戏（可重复 --game，或逗号分隔）
-python -m pxb7 crawl --game 10161,10013 --game 10032
+uv run pxb7-spider crawl --game 10161,10013 --game 10032
 
 # 抓某个大类下的全部游戏（1=网络游戏，2=手机游戏）
-python -m pxb7 crawl --class-id 2 --limit 500
+uv run pxb7-spider crawl --class-id 2 --limit 500
 
 # 全站（量大，建议先看下面的“规模”一节）
-python -m pxb7 crawl --all
+uv run pxb7-spider crawl --all
 
 # 交互式选择：先按关键字过滤，再输入编号，支持单选/多选
-python -m pxb7 crawl --select multi     # 1,3,5 或 2-6 或 a=全部
-python -m pxb7 crawl --select single
+uv run pxb7-spider crawl --select multi     # 1,3,5 或 2-6 或 a=全部
+uv run pxb7-spider crawl --select single
 
 # 查看断点进度
-python -m pxb7 status
+uv run pxb7-spider status
 ```
 
 常用参数：
@@ -146,6 +147,12 @@ probes/        # 调研脚本（保留，可独立运行）
  02_page_probe.py     # 观察页面发出的 XHR
  03_api_probe.py      # 页面内 XHR 调接口并落盘样例
  04_fetch_vs_xhr.py   # 复现 fetch 挂起 vs XHR 正常
+```
+
+probes 直接用 `uv run python` 执行，例如：
+
+```bash
+uv run python probes/03_api_probe.py 10161
 ```
 
 ## 已知限制
